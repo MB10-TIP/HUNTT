@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUNTT — Przegląd Operacyjny</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-light:  #e8f0e5;
+      --green-mid:    #c8ddc2;
+      --green-accent: #7a9e72;
+      --brown-light:  #f0ebe3;
+      --brown-mid:    #d8cfc4;
+      --brown-accent: #9a8472;
+      --amber-light:  #fdf7ea;
+      --amber-mid:    #ddb860;
+      --amber-accent: #8a6a1a;
+      --white:        #ffffff;
+      --off-white:    #fafaf8;
+      --text-dark:    #2a2a2a;
+      --text-mid:     #555555;
+      --text-light:   #888888;
+      --border:       #e0dbd4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      color: var(--text-dark);
+      background: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+    }
+
+    .brand-huntt {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.98);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 42px;
+    }
+    .nav-brand { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+    nav ul { list-style: none; display: none; gap: 18px; }
+    nav ul a { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-mid); text-decoration: none; }
+    nav ul a:hover { color: var(--green-accent); }
+
+    /* LAYOUT */
+    .container { max-width: 1020px; margin: 0 auto; padding: 0 16px; }
+    .section        { padding: 24px 0; border-top: 1px solid var(--border); }
+    .section-alt    { background: var(--off-white); }
+    .section-green  { background: var(--green-light); }
+    .section-brown  { background: var(--brown-light); }
+    .section-needs  { background: var(--amber-light); border-top: 2px solid var(--amber-mid); border-bottom: 2px solid var(--amber-mid); }
+
+    .label { display: inline-block; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 4px; }
+    .label-brown { color: var(--brown-accent); }
+    .label-amber { color: var(--amber-accent); }
+
+    h1 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 600; line-height: 1.1; color: var(--text-dark); }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; line-height: 1.25; color: var(--text-dark); }
+    h3 { font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+    p  { color: var(--text-mid); margin-bottom: 6px; font-size: 0.86rem; }
+    p:last-child { margin-bottom: 0; }
+
+    .divider        { width: 28px; height: 2px; background: var(--green-mid); margin: 6px 0 12px; }
+    .divider-brown  { background: var(--brown-mid); }
+    .divider-amber  { background: var(--amber-mid); }
+    .section-head   { margin-bottom: 12px; }
+
+    /* HERO */
+    .hero { padding: 24px 0; background: var(--off-white); border-bottom: 1px solid var(--border); }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; }
+    .hero-meta { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 8px; }
+    .hero h1 { margin-bottom: 4px; }
+    .hero-subtitle { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 10px; }
+    .hero-value-line { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 10px; }
+    .hero-value-line strong { color: var(--green-accent); font-weight: 700; }
+    .hero-intro { font-size: 0.84rem; line-height: 1.6; color: var(--text-mid); }
+    .hero-image-wrap { display: flex; align-items: center; justify-content: center; }
+    .hero-image-wrap img { width: 100%; max-width: 340px; height: auto; border-radius: 2px; }
+
+    /* QUICK SCAN — lighter */
+    .quickscan { background: var(--off-white); border-bottom: 1px solid var(--border); padding: 12px 0; }
+    .qs-head { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+    .quickscan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qs-item { padding: 8px 10px; background: var(--white); border: 1px solid var(--border); border-radius: 2px; }
+    .qs-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 2px; }
+    .qs-value { font-size: 0.84rem; font-weight: 600; color: var(--text-dark); }
+
+    /* GRIDS */
+    .two-col   { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+    .three-col { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+    /* CARD */
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 3px; padding: 12px 12px; }
+    .card-green { background: var(--green-light); border-color: var(--green-mid); }
+    .card-brown { background: var(--brown-light); border-color: var(--brown-mid); }
+
+    /* LIST */
+    ul.clean { list-style: none; padding: 0; }
+    ul.clean li { padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; color: var(--text-mid); display: flex; align-items: baseline; gap: 7px; }
+    ul.clean li:last-child { border-bottom: none; }
+    ul.clean li::before { content: '—'; color: var(--green-mid); flex-shrink: 0; }
+
+    /* PHASES */
+    .phases { display: grid; grid-template-columns: 1fr; }
+    .phase { padding: 14px 12px; border-bottom: 1px solid var(--border); }
+    .phase:last-child { border-bottom: none; }
+    .phase-num { font-size: 1.2rem; font-weight: 700; color: var(--green-mid); line-height: 1; margin-bottom: 3px; }
+    .phase-label { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 6px; display: block; }
+    .phase h3 { font-size: 0.86rem; margin-bottom: 6px; }
+    .phase ul.clean li { font-size: 0.8rem; }
+
+    /* STATUS */
+    .status-grid { display: grid; grid-template-columns: 1fr; gap: 7px; margin-top: 10px; }
+    .status-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; background: var(--white); border: 1px solid var(--border); border-radius: 2px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-accent); flex-shrink: 0; margin-top: 5px; }
+    .status-dot.orange { background: #d4a85a; }
+    .status-item p { font-size: 0.8rem; margin: 0; }
+
+    /* SURVEY */
+    .survey-box { background: var(--white); border: 1px solid var(--border); border-radius: 3px; padding: 18px 16px; text-align: center; }
+    .big-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 600; color: var(--green-accent); margin-bottom: 4px; }
+    .btn { display: inline-block; padding: 8px 20px; background: var(--green-accent); color: var(--white); text-decoration: none; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 2px; }
+    .btn:hover { background: #698b62; }
+
+    /* TOOLS — simple list, no icons */
+    .tools-simple { display: grid; grid-template-columns: 1fr; margin-top: 8px; }
+    .tool-row { font-size: 0.85rem; color: var(--text-mid); padding: 5px 0; border-bottom: 1px solid var(--border); }
+    .tool-row:last-child { border-bottom: none; }
+
+    /* IMAGES */
+    .img-block { border-radius: 3px; overflow: hidden; }
+    .img-block img { width: 100%; height: auto; display: block; object-fit: contain; }
+    .img-caption { font-size: 0.68rem; color: var(--text-light); margin-top: 6px; text-align: center; }
+
+    /* EVENTS */
+    .event-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .event-card { overflow: hidden; border-radius: 3px; border: 1px solid var(--border); }
+    .event-card img { width: 100%; height: auto; display: block; object-fit: contain; }
+    .event-card-body { padding: 12px 14px; }
+    .event-card-body h3 { margin-bottom: 3px; }
+
+    /* PRODUCT */
+    .product-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+    .price-badge { display: inline-block; background: var(--text-dark); color: #fff; font-size: 0.9rem; font-weight: 700; padding: 5px 12px; border-radius: 2px; margin: 8px 0 6px; }
+    .product-attrs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+    .attr { padding: 8px 10px; background: var(--green-light); border-radius: 2px; }
+    .attr .attr-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green-accent); margin-bottom: 2px; }
+    .attr .attr-val { font-size: 0.84rem; color: var(--text-dark); font-weight: 500; }
+
+    /* PILLARS */
+    .pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .pillar { padding: 12px; background: var(--white); border: 1px solid var(--border); border-radius: 2px; }
+    .pillar-icon { font-size: 0.85rem; margin-bottom: 4px; color: var(--green-accent); }
+    .pillar h3 { font-size: 0.84rem; }
+
+    /* FOOTER */
+    footer { background: var(--text-dark); color: rgba(255,255,255,0.5); padding: 24px 16px; text-align: center; }
+    footer .footer-brand { font-size: 0.95rem; font-weight: 600; color: var(--white); margin-bottom: 5px; }
+    footer .footer-sub { font-size: 0.74rem; }
+    footer .footer-meta { font-size: 0.68rem; margin-top: 8px; }
+
+    /* REASONS (Nazwa marki) */
+    .reasons-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 10px; }
+    .reason-item { display: flex; gap: 8px; padding: 8px 10px; background: var(--white); border: 1px solid var(--border); border-radius: 2px; }
+    .reason-num { font-size: 0.68rem; font-weight: 700; color: var(--green-accent); flex-shrink: 0; min-width: 16px; margin-top: 2px; }
+    .reason-item h3 { font-size: 0.86rem; margin-bottom: 1px; }
+    .reason-item p { font-size: 0.78rem; margin: 0; color: var(--text-light); }
+
+    /* NEEDS */
+    .needs-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 10px; }
+    .need-item { display: flex; gap: 8px; padding: 8px 10px; background: var(--white); border: 1px solid #ddb860; border-radius: 2px; }
+    .need-check { font-size: 0.82rem; flex-shrink: 0; color: var(--amber-accent); margin-top: 1px; }
+    .need-item h3 { font-size: 0.86rem; margin-bottom: 1px; }
+    .need-item p { font-size: 0.78rem; margin: 0; color: var(--text-light); }
+    .needs-note { margin-top: 8px; padding: 10px 14px; background: var(--white); border: 1px solid #ddb860; border-left: 3px solid #d4a85a; border-radius: 2px; }
+    .needs-note p { font-size: 0.84rem; }
+    .needs-note strong { font-weight: 600; color: var(--text-dark); }
+
+    /* COLLAB */
+    .collab-split { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .collab-box { padding: 12px 14px; border-radius: 3px; }
+    .collab-box.dm  { background: var(--green-light); border: 1px solid var(--green-mid); }
+    .collab-box.uni { background: var(--brown-light); border: 1px solid var(--brown-mid); }
+    .collab-tag { display: inline-block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-bottom: 6px; }
+    .collab-tag.dm  { background: var(--green-accent); color: #fff; }
+    .collab-tag.uni { background: var(--brown-accent); color: #fff; }
+    .collab-box h3 { font-size: 0.88rem; margin-bottom: 6px; }
+
+    /* KEY POINTS — simple, no dark box */
+    .key-points { margin-top: 12px; border: 1px solid var(--border); border-left: 3px solid var(--green-accent); border-radius: 2px; padding: 12px 14px; background: var(--off-white); }
+    .key-points .kp-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 8px; }
+    .key-points ul { list-style: none; padding: 0; }
+    .key-points ul li { font-size: 0.84rem; color: var(--text-mid); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; gap: 7px; align-items: baseline; }
+    .key-points ul li:last-child { border-bottom: none; }
+    .key-points ul li::before { content: '✓'; color: var(--green-accent); flex-shrink: 0; font-size: 0.78rem; }
+    .key-points ul li strong { color: var(--text-dark); font-weight: 600; }
+
+    /* TEAM */
+    .team-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+    .team-card { padding: 14px; background: var(--white); border: 1px solid var(--border); border-radius: 3px; }
+    .team-name { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+    .team-role { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-accent); margin-bottom: 8px; display: block; }
+    .team-logo { margin-bottom: 6px; }
+    .team-logo img { max-width: 220px; height: auto; display: block; }
+    @media (min-width: 768px) { .team-logo img { max-width: 260px; } }
+
+    /* DESKTOP */
+    @media (min-width: 768px) {
+      nav { padding: 0 32px; height: 46px; }
+      nav ul { display: flex; }
+      .container { padding: 0 32px; }
+      .section { padding: 32px 0; }
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 1.9rem; }
+      .hero { padding: 36px 0; }
+      .hero-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .quickscan-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .two-col   { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .three-col { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .phases { grid-template-columns: repeat(3, 1fr); }
+      .phase { border-bottom: none; border-right: 1px solid var(--border); padding: 18px 16px; }
+      .phase:last-child { border-right: none; }
+      .status-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .event-grid  { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .product-grid { grid-template-columns: 1fr 1.1fr; gap: 28px; }
+      .pillars { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .tools-simple { grid-template-columns: 1fr 1fr; }
+      .reasons-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .needs-grid   { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .collab-split { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .team-grid    { grid-template-columns: 1fr 1fr; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><span class="brand-huntt">HUNTT</span></div>
+  <ul>
+    <li><a href="#nazwa">Marka</a></li>
+    <li><a href="#projekt">Projekt</a></li>
+    <li><a href="#potrzeby">Potrzeby</a></li>
+    <li><a href="#wspolpraca">Współpraca</a></li>
+    <li><a href="#b2b">B2B</a></li>
+    <li><a href="#zespol">Zespół</a></li>
+    <li><a href="#narzedzia">Narzędzia</a></li>
+    <li><a href="#wizja">Wizja</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">Przegląd operacyjny · Rynek czeski · 2026</div>
+        <h1><span class="brand-huntt">HUNTT</span></h1>
+        <p class="hero-subtitle">Rozwój marki na rynku czeskim · <span style="color:var(--text-light);">DigitalMondays × UNIHAT</span></p>
+        <p class="hero-value-line"><strong>1 200 – 2 200 CZK</strong> · Kapelusze myśliwskie · Produkcja EU · Dostępność B2B · Szybka dystrybucja</p>
+        <p class="hero-intro">Projekt budowy marki <span class="brand-huntt">HUNTT</span> koncentruje się na produkcji i dystrybucji kapeluszy myśliwskich na rynku czeskim, z wykorzystaniem zaplecza produkcyjnego UNIHAT oraz lokalnej egzekucji DigitalMondays.</p>
+      </div>
+      <div class="hero-image-wrap">
+        <img src="HUNTT_logo/huntt7.jpeg" alt="HUNTT Logo">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK SCAN -->
+<div class="quickscan">
+  <div class="container">
+    <div class="qs-head">Najważniejsze informacje</div>
+    <div class="quickscan-grid">
+      <div class="qs-item">
+        <div class="qs-label">Produkt</div>
+        <div class="qs-value">Kapelusze myśliwskie</div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-label">Cena detaliczna</div>
+        <div class="qs-value">1 200 – 2 200 CZK</div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-label">Produkcja</div>
+        <div class="qs-value">Polska (UNIHAT)</div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-label">Rynek / Model</div>
+        <div class="qs-value">Czechy · B2B hurt</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAZWA MARKI -->
+<section class="section section-alt" id="nazwa">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Nazwa marki</span>
+      <div class="divider"></div>
+      <h2>Dlaczego <span class="brand-huntt">HUNTT</span>?</h2>
+    </div>
+    <div class="reasons-grid">
+      <div class="reason-item">
+        <div class="reason-num">01</div>
+        <div><h3>Dostępna domena .cz</h3><p>Domena huntt.cz była wolna — gotowa do natychmiastowego użycia</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">02</div>
+        <div><h3>Dostępność w social media</h3><p>Nazwy @huntt wolne na Instagram, Facebook, TikTok, LinkedIn</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">03</div>
+        <div><h3>Krótka i łatwa do zapamiętania</h3><p>Pięć liter — działa w każdym języku, łatwa do wymówienia</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">04</div>
+        <div><h3>Potencjał ekspansji zagranicznej</h3><p>Neutralna fonetycznie — gotowa na rynki SK, PL, DE, AT</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">05</div>
+        <div><h3>Silny potencjał brandingowy</h3><p>Unikalna, wyróżniająca się na tle TONAK i WERA</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">06</div>
+        <div><h3>Symbol HT</h3><p>Charakterystyczny dwuliterowy skrót — podstawa dla znaku graficznego</p></div>
+      </div>
+      <div class="reason-item">
+        <div class="reason-num">07</div>
+        <div><h3>Przypinka HT (pin)</h3><p>Możliwość stworzenia fizycznego akcesorium — pin HT jako element kolekcji</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- O PROJEKCIE -->
+<section class="section" id="projekt">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <span class="label">O projekcie</span>
+        <div class="divider"></div>
+        <h2>Nowa marka myśliwska</h2>
+        <p style="margin-top:8px;"><span class="brand-huntt">HUNTT</span> to nowa marka skupiona na kapeluszu myśliwskim dla czeskiego rynku — solidna jakość europejskiej produkcji w dostępnej cenie, segment średni.</p>
+      </div>
+      <div>
+        <div class="card card-green" style="margin-bottom:8px;">
+          <h3>Produkty</h3>
+          <ul class="clean" style="margin-top:5px;">
+            <li>Kapelusze myśliwskie filcowe</li>
+            <li>Kapelusze i czapki szyte</li>
+            <li>6–8 modeli, rozmiary 53–62</li>
+            <li>Kolory: zielony, brązowy, szary, czarny</li>
+          </ul>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div class="card">
+            <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--green-accent); margin-bottom:3px;">Produkcja</div>
+            <p style="font-size:0.86rem; font-weight:600; color:var(--text-dark); margin:0;">UNIHAT<br><span style="color:var(--text-light); font-size:0.76rem; font-weight:400;">Polska</span></p>
+          </div>
+          <div class="card">
+            <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--brown-accent); margin-bottom:3px;">Egzekucja</div>
+            <p style="font-size:0.86rem; font-weight:600; color:var(--text-dark); margin:0;">DigitalMondays<br><span style="color:var(--text-light); font-size:0.76rem; font-weight:400;">Czechy</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL BIZNESOWY -->
+<section class="section section-alt" id="model">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Model biznesowy</span>
+      <div class="divider"></div>
+      <h2>Od B2B do pełnego rynku</h2>
+    </div>
+    <div class="three-col">
+      <div class="card">
+        <div style="font-size:1.2rem; font-weight:700; color:var(--green-mid); margin-bottom:5px;">01</div>
+        <h3>Faza obecna</h3>
+        <p style="margin-top:3px;">Koncentracja na B2B — hurt. Sklepy myśliwskie, e-shopy, dystrybutorzy.</p>
+      </div>
+      <div class="card">
+        <div style="font-size:1.2rem; font-weight:700; color:var(--green-mid); margin-bottom:5px;">02</div>
+        <h3>Dalszy rozwój</h3>
+        <ul class="clean" style="margin-top:3px;">
+          <li>E-commerce B2C</li>
+          <li>Sklep stacjonarny — Ostrawa</li>
+        </ul>
+      </div>
+      <div class="card card-green">
+        <div style="font-size:1.2rem; font-weight:700; color:var(--green-accent); margin-bottom:5px;">+</div>
+        <h3>Przewaga wejścia</h3>
+        <p style="margin-top:3px;">Istniejące kontakty B2B — doświadczenie z TONAK daje bezpośredni dostęp do kluczowych odbiorców.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGIA -->
+<section class="section" id="strategia">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Strategia wejścia</span>
+      <div class="divider"></div>
+      <h2>Plan działania — trzy fazy</h2>
+    </div>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num">01</div>
+        <span class="phase-label">0–3 miesiące</span>
+        <h3>Uruchomienie kanałów</h3>
+        <ul class="clean">
+          <li>Kanały social media (IG, FB, LI)</li>
+          <li>Landing page B2B</li>
+          <li>Katalog B2B kapeluszy</li>
+          <li>Baza sklepów myśliwskich CZ</li>
+          <li>Bezpośredni kontakt handlowy</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-num">02</div>
+        <span class="phase-label">3–9 miesięcy</span>
+        <h3>Skalowanie B2B</h3>
+        <ul class="clean">
+          <li>Rozwój sprzedaży B2B</li>
+          <li>Kampanie PPC</li>
+          <li>SEO</li>
+          <li>Udział w targach</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-num">03</div>
+        <span class="phase-label">Perspektywa</span>
+        <h3>Ekspansja rynkowa</h3>
+        <ul class="clean">
+          <li>Uruchomienie e-shopu</li>
+          <li>Rozwój contentu (YouTube, TikTok)</li>
+          <li>Sklep fizyczny — Ostrawa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AKTUALNY STATUS -->
+<section class="section section-green" id="status">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Aktualny status</span>
+      <div class="divider"></div>
+      <h2>W realizacji</h2>
+    </div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-dot orange"></div>
+        <div>
+          <h3 style="font-size:0.84rem; margin-bottom:1px;">Baza kontaktów B2B</h3>
+          <p>Budowa bazy sklepów myśliwskich i dystrybutorów na rynku czeskim</p>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <div>
+          <h3 style="font-size:0.84rem; margin-bottom:1px;">Analiza rynku</h3>
+          <p>Ankieta w społeczności myśliwskiej — weryfikacja popytu</p>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-dot orange"></div>
+        <div>
+          <h3 style="font-size:0.84rem; margin-bottom:1px;">Branding</h3>
+          <p>Przygotowanie identyfikacji wizualnej marki <span class="brand-huntt">HUNTT</span></p>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-dot orange"></div>
+        <div>
+          <h3 style="font-size:0.84rem; margin-bottom:1px;">Infrastruktura online</h3>
+          <p>Przygotowanie landing page, domen i narzędzi operacyjnych</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CO POTRZEBUJEMY OD UNIHAT -->
+<section class="section section-needs" id="potrzeby">
+  <div class="container">
+    <div class="section-head">
+      <span class="label label-amber">Zakres współpracy</span>
+      <div class="divider divider-amber"></div>
+      <h2>Aktualne potrzeby od UNIHAT</h2>
+      <p style="margin-top:5px;">Aby przyspieszyć wejście na rynek czeski, potrzebujemy poniższych danych i materiałów.</p>
+    </div>
+    <div class="needs-grid">
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Lista modeli dostępnych od zaraz</h3><p>Które kapelusze myśliwskie są gotowe do wysyłki lub w krótkim lead time</p></div>
+      </div>
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Zdjęcia produktowe</h3><p>Jeśli istnieją — zdjęcia studyjne lub produktowe gotowych kapeluszy</p></div>
+      </div>
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Cennik hurtowy (B2B pricing)</h3><p>Ceny zakupu dla dystrybutora / partnera B2B</p></div>
+      </div>
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Production lead time</h3><p>Czas realizacji zamówień od zlecenia do wysyłki</p></div>
+      </div>
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Dostępność form (kształtów)</h3><p>Jakie formy kapeluszowe są aktualnie dostępne w produkcji</p></div>
+      </div>
+      <div class="need-item">
+        <div class="need-check">□</div>
+        <div><h3>Dostępność komponentów</h3><p>Filce, taśmy, komponenty — magazyn i możliwości zamówień</p></div>
+      </div>
+    </div>
+    <div class="needs-note">
+      <p><strong>Kolekcja myśliwska:</strong> jeśli UNIHAT nie posiada dedykowanej kolekcji myśliwskiej — Katka zaprojektuje i zdefiniuje taką kolekcję na podstawie dostępnych form i komponentów.</p>
+    </div>
+    <div class="needs-note" style="margin-top:6px;">
+      <p><strong>Spotkanie w fabryce:</strong> planujemy wizytę w zakładzie produkcyjnym w celu nagrania materiałów foto i video z procesu produkcji. Materiały będą używane w social media (Instagram, Facebook) jako content budujący wiarygodność marki.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BADANIE RYNKU -->
+<section class="section" id="badanie">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <span class="label">Badanie rynku</span>
+        <div class="divider"></div>
+        <h2>Ankieta w społeczności myśliwskiej</h2>
+        <p style="margin-top:8px;">Uruchomiono ankietę skierowaną do czeskich myśliwych — społeczności ~50 000 aktywnych członków.</p>
+        <ul class="clean" style="margin-top:8px;">
+          <li>Poznanie preferencji klientów</li>
+          <li>Zebranie insightów produktowych</li>
+          <li>Walidacja popytu na rynku CZ</li>
+        </ul>
+      </div>
+      <div class="survey-box">
+        <div class="big-num">~50 000</div>
+        <p>członków społeczności myśliwskiej objętych ankietą</p>
+        <div style="width:24px; height:1px; background:var(--border); margin:10px auto;"></div>
+        <p style="font-size:0.76rem; color:var(--text-light); margin-bottom:12px;">Trwa zbieranie odpowiedzi</p>
+        <a href="https://www.survio.com/survey/d/Q7H2B9N3Y3I2N8M3E" target="_blank" class="btn">Przejdź do ankiety</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRONA B2B -->
+<section class="section section-alt" id="b2b">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <span class="label">Strona B2B</span>
+        <div class="divider"></div>
+        <h2>Landing page dla partnerów hurtowych</h2>
+        <p style="margin-top:8px;">Strona B2B prezentuje ofertę <span class="brand-huntt">HUNTT</span> skierowaną do sklepów myśliwskich, e-shopów i dystrybutorów.</p>
+        <ul class="clean" style="margin-top:8px;">
+          <li>Katalog produktów z opisami i parametrami</li>
+          <li>Prezentacja dostępnych modeli i rozmiarów</li>
+          <li>Formularz kontaktowy / zapytanie hurtowe</li>
+          <li>Szybki czas ładowania, wersja mobilna</li>
+          <li>Wysoka marża dla sklepu partnerskiego</li>
+        </ul>
+        <h3 style="margin-top:14px;">Technologia i hosting</h3>
+        <ul class="clean" style="margin-top:6px;">
+          <li>Strona statyczna (HTML5 + CSS)</li>
+          <li>Hosting: GitHub Pages</li>
+          <li>Brak backendu — szybkie ładowanie i niskie koszty</li>
+          <li>Łatwa edycja i deployment przez Git</li>
+          <li>Gotowość do rozbudowy (formularz, tracking, SEO)</li>
+        </ul>
+        <p style="margin-top:6px;">Model oparty na statycznej stronie pozwala na szybkie uruchomienie projektu, minimalne koszty utrzymania oraz wysoką wydajność. Rozwiązanie jest optymalne na etapie walidacji i skalowania sprzedaży B2B.</p>
+      </div>
+      <div>
+        <div class="img-block">
+          <img src="graphic/visual%20landing_page.png" alt="Landing page B2B HUNTT">
+          <p class="img-caption">Podgląd strony B2B — landing page <span class="brand-huntt">HUNTT</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL WSPÓŁPRACY -->
+<section class="section" id="wspolpraca">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Model współpracy</span>
+      <div class="divider"></div>
+      <h2>Podział odpowiedzialności i model finansowy</h2>
+    </div>
+    <div class="collab-split">
+      <div class="collab-box dm">
+        <div class="collab-tag dm">DigitalMondays</div>
+        <h3>Marketing, sprzedaż, ekspansja CZ</h3>
+        <ul class="clean" style="margin-top:5px;">
+          <li style="font-size:0.82rem;">Branding i identyfikacja wizualna</li>
+          <li style="font-size:0.82rem;">Social media — zarządzanie i content</li>
+          <li style="font-size:0.82rem;">Kampanie PPC (Meta Ads, Google Ads)</li>
+          <li style="font-size:0.82rem;">SEO i widoczność organiczna</li>
+          <li style="font-size:0.82rem;">Działania handlowe B2B</li>
+          <li style="font-size:0.82rem;">Budowa relacji z partnerami</li>
+          <li style="font-size:0.82rem;">Zamykanie sprzedaży</li>
+          <li style="font-size:0.82rem;">Obecność na wydarzeniach branżowych</li>
+        </ul>
+      </div>
+      <div class="collab-box uni">
+        <div class="collab-tag uni">UNIHAT</div>
+        <h3>Produkcja, logistyka, stock</h3>
+        <ul class="clean" style="margin-top:5px;">
+          <li style="font-size:0.82rem;">Produkcja kapeluszy myśliwskich</li>
+          <li style="font-size:0.82rem;">Magazynowanie i zarządzanie stockiem</li>
+          <li style="font-size:0.82rem;">Realizacja zamówień i wysyłka</li>
+          <li style="font-size:0.82rem;">Kontrola jakości</li>
+          <li style="font-size:0.82rem;">Opracowanie kolekcji (we współpracy)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp-title">Model finansowy — kluczowe zasady</div>
+      <ul>
+        <li>100% przychodu ze sprzedaży trafia bezpośrednio do UNIHAT</li>
+        <li>DigitalMondays nie pobiera prowizji od zamówień</li>
+        <li>DigitalMondays otrzymuje stałe wynagrodzenie miesięczne: <strong>6 000 PLN</strong></li>
+        <li>Model zapewnia pełną transparentność finansową między partnerami</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DIGITALMONDAYS TEAM -->
+<section class="section section-alt" id="zespol">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Zespół</span>
+      <div class="divider"></div>
+      <div class="team-logo">
+        <img src="graphic/logo_tag_favorite.png" alt="DigitalMondays logo">
+      </div>
+      <p style="margin-top:4px;">Zespół odpowiedzialny za egzekucję rynku czeskiego.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-name">Katka</div>
+        <span class="team-role">Produkt · Design · Marketing</span>
+        <ul class="clean">
+          <li>Produkt — wybór i definiowanie kolekcji</li>
+          <li>Design — identyfikacja wizualna marki</li>
+          <li>Marketing — FB, IG, LinkedIn</li>
+          <li>Kampanie PPC</li>
+          <li>SEO</li>
+        </ul>
+      </div>
+      <div class="team-card">
+        <div class="team-name">Marian</div>
+        <span class="team-role">Sprzedaż B2B · Strategia · Ekspansja</span>
+        <ul class="clean">
+          <li>Sprzedaż B2B — kontakty z partnerami</li>
+          <li>Strategia wejścia na rynek</li>
+          <li>Ekspansja rynku czeskiego</li>
+          <li>Budowa relacji handlowych</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NARZĘDZIA -->
+<section class="section" id="narzedzia">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <span class="label">Narzędzia</span>
+        <div class="divider"></div>
+        <h2>Stack operacyjny</h2>
+        <p style="margin-top:8px; margin-bottom:4px;">Narzędzia używane w projekcie.</p>
+        <div class="tools-simple">
+          <div class="tool-row">Google Workspace</div>
+          <div class="tool-row">Slack</div>
+          <div class="tool-row">Notion</div>
+          <div class="tool-row">HTML5</div>
+          <div class="tool-row">CSS</div>
+          <div class="tool-row">SmartEmailing</div>
+          <div class="tool-row">GitHub Pages</div>
+          <div class="tool-row">ChatGPT</div>
+          <div class="tool-row">Codex</div>
+          <div class="tool-row">Claude Code</div>
+          <div class="tool-row">Cursor</div>
+          <div class="tool-row">Figma</div>
+          <div class="tool-row">Canva</div>
+        </div>
+      </div>
+      <div>
+        <h2>Model komunikacji</h2>
+        <p style="margin-top:8px; margin-bottom:10px;">Regularna i ustrukturyzowana komunikacja między partnerami projektu.</p>
+        <ul class="clean">
+          <li>Regularne spotkania online — weekly</li>
+          <li>Współdzielone dokumenty na Google Drive</li>
+          <li>Transparentny reporting wyników</li>
+          <li>Kanał Slack do bieżącej komunikacji</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRUKTURA PRAWNA -->
+<section class="section section-alt" id="struktura">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <span class="label">Struktura prawna</span>
+        <div class="divider"></div>
+        <h2>Spółka czeska</h2>
+        <p style="margin-top:8px;">Planowane jest utworzenie spółki w Czechach jako formalnej struktury dla działalności <span class="brand-huntt">HUNTT</span> na rynku lokalnym.</p>
+        <div class="card card-green" style="margin-top:10px;">
+          <ul class="clean">
+            <li>Udział: DigitalMondays</li>
+            <li>Udział: UNIHAT</li>
+            <li>Doradztwo: Dafin Morava</li>
+            <li>Kontakt: pani Kolouchová</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="img-block">
+          <img src="graphic/dafin_morava.png" alt="Dafin Morava">
+          <p class="img-caption">Dafin Morava — doradztwo prawno-podatkowe CZ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WYDARZENIA -->
+<section class="section section-green" id="wydarzenia">
+  <div class="container">
+    <div class="section-head">
+      <span class="label">Wydarzenia branżowe</span>
+      <div class="divider"></div>
+      <h2>Planowana obecność</h2>
+    </div>
+    <div class="event-grid">
+      <div class="event-card">
+        <img src="graphic/natura_viva.png" alt="Viva Natura">
+        <div class="event-card-body">
+          <h3>VIVA NATURA</h3>
+          <p>Targi łowieckie i przyrodnicze — platforma B2B i prezentacja marki <span class="brand-huntt">HUNTT</span>.</p>
+        </div>
+      </div>
+      <div class="event-card">
+        <img src="graphic/silva_regina.png" alt="Silva Regina">
+        <div class="event-card-body">
+          <h3>SILVA REGINA</h3>
+          <p>Międzynarodowe targi leśnictwa i łowiectwa w Brnie — bezpośredni dostęp do decydentów sektora.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUKT -->
+<section class="section">
+  <div class="container">
+    <div class="product-grid">
+      <div>
+        <span class="label">Produkt</span>
+        <div class="divider"></div>
+        <h2>Kapelusze myśliwskie <span class="brand-huntt">HUNTT</span></h2>
+        <div class="price-badge">1 200 – 2 200 CZK</div>
+        <p>Solidny kapelusz myśliwski dla czeskiego myśliwego — wysoka jakość europejskiej produkcji w dostępnej cenie. Segment średni.</p>
+        <div class="product-attrs">
+          <div class="attr">
+            <div class="attr-label">Jakość</div>
+            <div class="attr-val">Europejski filc</div>
+          </div>
+          <div class="attr">
+            <div class="attr-label">Pochodzenie</div>
+            <div class="attr-val">Made in EU</div>
+          </div>
+          <div class="attr">
+            <div class="attr-label">Segment</div>
+            <div class="attr-val">Średni (B2B)</div>
+          </div>
+          <div class="attr">
+            <div class="attr-label">Dostępność</div>
+            <div class="attr-val">Hurt / B2B</div>
+          </div>
+        </div>
+      </div>
+      <div class="img-block">
+        <img src="graphic/tonak_hat.jpeg" alt="Kapelusz myśliwski">
+        <p class="img-caption">Segment średni — wysoka jakość w dostępnej cenie</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WIZJA -->
+<section class="section section-brown" id="wizja">
+  <div class="container">
+    <div class="section-head">
+      <span class="label label-brown">Wizja</span>
+      <div class="divider divider-brown"></div>
+      <h2>Budowa rozpoznawalnej marki myśliwskiej w Czechach</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">◆</div>
+        <h3>Sieć B2B</h3>
+        <p style="font-size:0.76rem; margin-top:2px; color:var(--text-light);">Dystrybutorzy i partnerzy hurtowi</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">◆</div>
+        <h3>Dostępność cenowa</h3>
+        <p style="font-size:0.76rem; margin-top:2px; color:var(--text-light);">1 200–2 200 CZK · segment średni</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">◆</div>
+        <h3>Jakość EU</h3>
+        <p style="font-size:0.76rem; margin-top:2px; color:var(--text-light);">Europejska produkcja, solidne wykonanie</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">◆</div>
+        <h3>Długoterminowy rozwój</h3>
+        <p style="font-size:0.76rem; margin-top:2px; color:var(--text-light);">B2B → B2C → sklep stacjonarny</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand"><span class="brand-huntt">HUNTT</span></div>
+  <p class="footer-sub">DigitalMondays × UNIHAT · Projekt rozwoju rynku czeskiego</p>
+  <p class="footer-meta">Dokument wewnętrzny · Przegląd operacyjny · 2026</p>
+</footer>
+
+</body>
+</html>
