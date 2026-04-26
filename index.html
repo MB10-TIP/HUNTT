@@ -221,6 +221,58 @@
     .team-logo img { max-width: 220px; height: auto; display: block; }
     @media (min-width: 768px) { .team-logo img { max-width: 260px; } }
 
+    /* LOGIN SCREEN */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--off-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .login-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      border-radius: 4px;
+    }
+    .login-brand { margin-bottom: 16px; display: flex; justify-content: center; }
+    .login-brand img { width: 140px; height: auto; object-fit: contain; display: block; }
+    @media (max-width: 480px) { .login-brand img { width: 110px; } }
+    .login-box h2 { font-size: 1.2rem; margin-bottom: 6px; }
+    .login-box p { font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px; }
+    #password-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+    #password-input:focus { border-color: var(--green-accent); }
+    .login-box button {
+      width: 100%;
+      padding: 9px;
+      background: var(--green-accent);
+      color: white;
+      border: none;
+      border-radius: 2px;
+      font-size: 0.75rem;
+      font-family: inherit;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .login-box button:hover { background: #698b62; }
+    #error-msg { color: #c0392b; font-size: 0.75rem; margin-top: 8px; min-height: 1em; }
+
     /* DESKTOP */
     @media (min-width: 768px) {
       nav { padding: 0 32px; height: 46px; }
@@ -251,6 +303,21 @@
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-brand"><img src="HUNTT_logo/huntt7.jpeg" alt="HUNTT logo"></div>
+    <h2>Dostęp do materiału</h2>
+    <p>Wprowadź hasło, aby zobaczyć przegląd projektu.</p>
+    <input type="password" id="password-input" placeholder="Hasło">
+    <button onclick="checkPassword()">Wejdź</button>
+    <p id="error-msg"></p>
+  </div>
+</div>
+
+<!-- PROTECTED CONTENT -->
+<div id="protected-content" style="display:none;">
+
 <!-- NAV -->
 <nav>
   <div class="nav-brand"><span class="brand-huntt">HUNTT</span></div>
@@ -274,7 +341,7 @@
         <div class="hero-meta">Przegląd operacyjny · Rynek czeski · 2026</div>
         <h1><span class="brand-huntt">HUNTT</span></h1>
         <p class="hero-subtitle">Rozwój marki na rynku czeskim · <span style="color:var(--text-light);">DigitalMondays × UNIHAT</span></p>
-        <p class="hero-value-line"><strong>1 200 – 2 200 CZK</strong> · Kapelusze myśliwskie · Produkcja EU · Dostępność B2B · Szybka dystrybucja</p>
+        <p class="hero-value-line">Kapelusze myśliwskie · Produkcja EU · Dostępność B2B · Szybka dystrybucja</p>
         <p class="hero-intro">Projekt budowy marki <span class="brand-huntt">HUNTT</span> koncentruje się na produkcji i dystrybucji kapeluszy myśliwskich na rynku czeskim, z wykorzystaniem zaplecza produkcyjnego UNIHAT oraz lokalnej egzekucji DigitalMondays.</p>
       </div>
       <div class="hero-image-wrap">
@@ -863,6 +930,23 @@
   <p class="footer-sub">DigitalMondays × UNIHAT · Projekt rozwoju rynku czeskiego</p>
   <p class="footer-meta">Dokument wewnętrzny · Przegląd operacyjny · 2026</p>
 </footer>
+
+</div><!-- /protected-content -->
+
+<script>
+  function checkPassword() {
+    var input = document.getElementById("password-input").value;
+    if (input === "huntt2026") {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("protected-content").style.display = "block";
+    } else {
+      document.getElementById("error-msg").innerText = "Nieprawidłowe hasło";
+    }
+  }
+  document.getElementById("password-input").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+</script>
 
 </body>
 </html>
